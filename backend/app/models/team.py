@@ -1,6 +1,7 @@
 from app.extensions import db
 import uuid
 
+
 class Team(db.Model):
     __tablename__ = 'teams'
 

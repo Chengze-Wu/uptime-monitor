@@ -1,6 +1,7 @@
 from app.extensions import db
 import uuid
 
+
 class SSLCertificate(db.Model):
     __tablename__ = 'ssl_certificates'
 
