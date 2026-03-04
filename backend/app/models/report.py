@@ -1,9 +1,15 @@
-from app import db
+from app.extensions import db
+import uuid
+
 
 class Report(db.Model):
     __tablename__ = 'reports'
 
     id = db.Column(db.Integer, primary_key=True)
+    public_id = db.Column(
+        db.String(36),
+        default=lambda: str(uuid.uuid4())
+    )
     user_id = db.Column(
         db.Integer,
         db.ForeignKey('users.id'),
@@ -22,7 +28,7 @@ class Report(db.Model):
 
     def to_dict(self):
         return {
-            'id': self.id,
+            'id': self.public_id,
             'user_id': self.user_id,
             'monitor_id': self.monitor_id,
             'range_start': self.range_start.isoformat() if self.range_start else None,

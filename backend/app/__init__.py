@@ -1,12 +1,10 @@
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_cors import CORS
 from config import config
 import os
+from app.extensions import db, migrate
 
-db = SQLAlchemy()
-migrate = Migrate()
 
 
 def create_app():
@@ -27,6 +25,9 @@ def create_app():
             CheckResult, SSLCertificate, NotificationRule,
             MaintenanceWindow, Incident, Report
         )
+
+        from app.routes.auth import auth_bp
+        app.register_blueprint(auth_bp)
 
     # Register error handler
     @app.errorhandler(404)

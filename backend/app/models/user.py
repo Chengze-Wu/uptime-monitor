@@ -1,11 +1,14 @@
-from app import db
+from app.extensions import db
 import bcrypt
-
+import uuid
 
 class User(db.Model):
     __tablename__ = 'users'
-
     id = db.Column(db.Integer, primary_key=True)
+    public_id = db.Column(
+        db.String(36),
+        default=lambda: str(uuid.uuid4())
+    )
     email = db.Column(db.String(255), unique=True, nullable=False)
     password_hash = db.Column(db.String(255), nullable=False)
     firstname = db.Column(db.String(255))
@@ -33,7 +36,7 @@ class User(db.Model):
 
     def to_dict(self):
         return {
-            'id': self.id,
+            'id': self.public_id,
             'email': self.email,
             'firstname': self.firstname,
             'lastname': self.lastname,

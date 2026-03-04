@@ -1,11 +1,16 @@
-from app import db
+from app.extensions import db
 from sqlalchemy.dialects.postgresql import ARRAY
+import uuid
 
 
 class NotificationRule(db.Model):
     __tablename__ = 'notification_rules'
 
     id = db.Column(db.Integer, primary_key=True)
+    public_id = db.Column(
+        db.String(36),
+        default=lambda: str(uuid.uuid4())
+    )
     monitor_id = db.Column(
         db.Integer,
         db.ForeignKey('monitors.id'),
@@ -19,7 +24,7 @@ class NotificationRule(db.Model):
 
     def to_dict(self):
         return {
-            'id': self.id,
+            'id': self.public_id,
             'monitor_id': self.monitor_id,
             'notify_email': self.notify_email,
             'notify_on_down': self.notify_on_down,

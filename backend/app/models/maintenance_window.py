@@ -1,10 +1,15 @@
-from app import db
+from app.extensions import db
+import uuid
 
 
 class MaintenanceWindow(db.Model):
     __tablename__ = 'maintenance_windows'
 
     id = db.Column(db.Integer, primary_key=True)
+    public_id = db.Column(
+        db.String(36),
+        default=lambda: str(uuid.uuid4())
+    )
     monitor_id = db.Column(
         db.Integer,
         db.ForeignKey('monitors.id'),
@@ -17,7 +22,7 @@ class MaintenanceWindow(db.Model):
 
     def to_dict(self):
         return {
-            'id': self.id,
+            'id': self.public_id,
             'monitor_id': self.monitor_id,
             'start_time': self.start_time.isoformat() if self.start_time else None,
             'end_time': self.end_time.isoformat() if self.end_time else None,
