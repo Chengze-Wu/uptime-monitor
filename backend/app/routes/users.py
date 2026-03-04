@@ -25,3 +25,20 @@ def get_user(public_id):
         return jsonify({'user': user.to_dict()}), 200
 
     return jsonify({'error': 'User not found'}), 404
+
+
+@users_bp.route('/<public_id>', methods=['PUT'])
+@require_auth
+def update_user(public_id):
+    data = request.get_json()
+    current = auth_service.get_current_user()
+    user = users_service.get_user(public_id)
+    if not user:
+        return jsonify({'error': 'User not found'}), 404
+    if current.role == 'admin':
+        updated_user = users_service.update_user(public_id, data, is_admin=True)
+    elif current.public_id == user.public_id:
+        updated_user = users_service.update_user(public_id, data, data, is_admin=False)
+    else:
+        return jsonify({'error': 'User not found'}), 404
+    return jsonify({'user': updated_user.to_dict()}), 200
