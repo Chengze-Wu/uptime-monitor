@@ -1,10 +1,15 @@
-from app import db
+from app.extensions import db
+import uuid
 
 
 class Monitor(db.Model):
     __tablename__ = 'monitors'
 
     id = db.Column(db.Integer, primary_key=True)
+    public_id = db.Column(
+        db.String(36),
+        default=lambda: str(uuid.uuid4())
+    )
     creator_id = db.Column(
         db.Integer,
         db.ForeignKey('users.id'),
@@ -65,7 +70,7 @@ class Monitor(db.Model):
 
     def to_dict(self):
         return {
-            'id': self.id,
+            'id': self.public_id,
             'creator_id': self.creator_id,
             'owner_team_id': self.owner_team_id,
             'ownership_type': self.ownership_type,

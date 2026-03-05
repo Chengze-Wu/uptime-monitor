@@ -1,10 +1,15 @@
-from app import db
+from app.extensions import db
+import uuid
 
 
 class SSLCertificate(db.Model):
     __tablename__ = 'ssl_certificates'
 
     id = db.Column(db.Integer, primary_key=True)
+    public_id = db.Column(
+        db.String(36),
+        default=lambda: str(uuid.uuid4())
+    )
     monitor_id = db.Column(
         db.Integer,
         db.ForeignKey('monitors.id'),
@@ -18,7 +23,7 @@ class SSLCertificate(db.Model):
 
     def to_dict(self):
         return {
-            'id': self.id,
+            'id': self.public_id,
             'monitor_id': self.monitor_id,
             'checked_at': self.checked_at.isoformat() if self.checked_at else None,
             'is_valid': self.is_valid,
